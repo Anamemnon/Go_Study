@@ -30,6 +30,10 @@ func main() {
 		println("Sorry. You didn't guess my number. It was", targetNumber)
 	}
 
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Press enter to exit.")
+	_, _ = reader.ReadString('\n')
+
 }
 
 func getRandomNumber(upperBound int) int {
