@@ -25,5 +25,6 @@ func getStatus(passed bool) (status string) {
 	if passed {
 		return "passing"
 	}
+
 	return "failing"
 }

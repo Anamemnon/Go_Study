@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	targetNumber := getRandomNumber(100)
+	targetNumber := getRandomNumber()
 
 	fmt.Println("I've chosen a random number between 1 and 100.")
 	fmt.Println("Can you guess it?")
@@ -31,14 +31,15 @@ func main() {
 	}
 
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Press enter to exit.")
+	_, _ = fmt.Print("Press enter to exit.")
 	_, _ = reader.ReadString('\n')
 
 }
 
-func getRandomNumber(upperBound int) int {
+func getRandomNumber() int {
 	seconds := time.Now().Unix()
 	rand.Seed(seconds)
+
 	return rand.Intn(100) + 1 // from 1 to 100
 }
 
@@ -47,12 +48,14 @@ func getUserNumber() int {
 
 	reader := bufio.NewReader(os.Stdin)
 	input, err := reader.ReadString('\n')
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	input = strings.TrimSpace(input)
 	number, err := strconv.Atoi(input)
+
 	if err != nil {
 		log.Fatal(err)
 	}
