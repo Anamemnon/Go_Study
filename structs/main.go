@@ -3,9 +3,14 @@ package main
 import "fmt"
 
 type subscriber struct {
-	name   string
-	rate   float64
-	active bool
+	name        string
+	rate        float64
+	active      bool
+	address
+}
+
+type address struct {
+	street string
 }
 
 func main() {
@@ -13,6 +18,7 @@ func main() {
 		name:   "Aman",
 		rate:   4.99,
 		active: true,
+		address: address{street: "Street"},
 	}
 
 	printSubscriber(&sub)
@@ -20,6 +26,6 @@ func main() {
 }
 
 func printSubscriber(s *subscriber) {
-	fmt.Println(s.name, s.rate, s.active)
+	fmt.Println(s.name, s.rate, s.active, s.street)
 	s.rate += 2
 }
