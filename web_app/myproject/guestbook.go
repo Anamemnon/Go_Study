@@ -1,14 +1,16 @@
 package main
 
 import (
+	"bufio"
 	"html/template"
 	"log"
+	"net/http"
 	"os"
 )
 
-type Part struct {
-	Name  string
-	Count int
+type GuestBook struct {
+	SignatureCount int
+	Signatures     []string
 }
 
 func check(err error) {
@@ -17,23 +19,44 @@ func check(err error) {
 	}
 }
 
-func executeTemplate(text string, data interface{}) {
-	tmpl, err := template.New("test").Parse(text)
+func getStrings(fileName string) []string {
+	var lines []string
+
+	file, err := os.Open(fileName)
+	if os.IsNotExist(err) {
+		return nil
+	}
+
 	check(err)
-	err = tmpl.Execute(os.Stdout, data)
+
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	check(scanner.Err())
+
+	return lines
+}
+
+func viewHandler(writer http.ResponseWriter, request *http.Request) {
+	signatures := getStrings("signatures.txt")
+
+	html, err := template.ParseFiles("view.html")
+	check(err)
+
+	guestBook := GuestBook{
+		SignatureCount: len(signatures),
+		Signatures:     signatures,
+	}
+
+	err = html.Execute(writer, guestBook)
 	check(err)
 }
 
-func main(){
-	executeTemplate("Dot is: {{.}}!\n", "ABC")
-	executeTemplate("Dot is: {{.}}!\n", 123.5)
-
-	executeTemplate("\nstart {{if .}}Dot is true!{{end}} finish\n", true)
-	executeTemplate("start {{if .}}Dot is false!{{end}} finish\n", false)
-
-	templateText := "\nBefore loop: {{.}}\n{{range .}}In loop: {{.}}\n{{end}}After loop: {{.}}\n"
-	executeTemplate(templateText, []int{1, 2, 3})
-
-	templateText = "\nName: {{.Name}}\nCount: {{.Count}}\n"
-	executeTemplate(templateText, Part{Name: "Fuses", Count: 5})
+func main() {
+	http.HandleFunc("/guestbook", viewHandler)
+	err := http.ListenAndServe("localhost:8080", nil)
+	log.Fatal(err)
 }
