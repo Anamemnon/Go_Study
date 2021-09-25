@@ -11,7 +11,7 @@ import (
 func main() {
 	n := getInt()
 	scanner := bufio.NewScanner(os.Stdin)
-	var passenger passengers
+	passenger := passengers{}
 	max := 0
 	temp := 0
 
@@ -22,7 +22,7 @@ func main() {
 			break
 		}
 
-		passenger = parse(str)
+		parse(str, &passenger)
 		temp = temp - passenger.Out + passenger.In
 
 		if temp > max {
@@ -58,7 +58,7 @@ func nextString(scanner *bufio.Scanner) string {
 	return ""
 }
 
-func parse(input string) passengers {
+func parse(input string, p *passengers) {
 
 	arr := strings.Split(input, " ")
 	out, err := strconv.Atoi(arr[0])
@@ -73,5 +73,6 @@ func parse(input string) passengers {
 		panic(err)
 	}
 
-	return passengers{In: in, Out: out}
+	p.In = in
+	p.Out = out
 }
