@@ -9,7 +9,7 @@ func main() {
 }
 
 func sortArrayByParityII(nums []int) []int {
-	arr := make([]int, len(nums), len(nums))
+	arr := make([]int, len(nums))
 
 	k := 0
 	j := 1
