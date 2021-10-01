@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 const (
 	PORT = 4000
@@ -34,7 +35,14 @@ func home(w http.ResponseWriter, r *http.Request) {
 }
 
 func showSnippet(w http.ResponseWriter, r *http.Request) {
-	_, err := w.Write([]byte("Отображение заметки..."))
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+
+	if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
+
+	_, err = w.Write([]byte("Отображение заметки..."))
 
 	if err != nil {
 		panic(err)
