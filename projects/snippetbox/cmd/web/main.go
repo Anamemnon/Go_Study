@@ -15,6 +15,9 @@ func main() {
 	mux.HandleFunc("/snippet", showSnippet)
 	mux.HandleFunc("/snippet/create", createSnippet)
 
+	fileServer := http.FileServer(http.Dir("projects/snippetbox/ui/static"))
+	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+
 	log.Printf("Запуск веб-сервера на http://127.0.0.1:%d\n", PORT)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", PORT), mux)
 	log.Fatal(err)
