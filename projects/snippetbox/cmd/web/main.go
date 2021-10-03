@@ -1,16 +1,19 @@
 package main
 
 import (
-	"fmt"
+	"flag"
 	"log"
 	"net/http"
 	"path/filepath"
 )
 const (
-	PORT = 4000
+	ADDRESS = "127.0.0.1:4000"
 )
 
 func main() {
+	addr := flag.String("addr", ADDRESS, "Сетевой адрес HTTP")
+	flag.Parse()
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
 	mux.HandleFunc("/snippet", showSnippet)
@@ -19,8 +22,8 @@ func main() {
 	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./static")})
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	log.Printf("Запуск веб-сервера на http://127.0.0.1:%d\n", PORT)
-	err := http.ListenAndServe(fmt.Sprintf(":%d", PORT), mux)
+	log.Printf("Запуск веб-сервера на %s\n", *addr)
+	err := http.ListenAndServe(*addr, mux)
 	log.Fatal(err)
 }
 
